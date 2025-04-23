@@ -1,0 +1,12 @@
+{
+  "Ahmad": {
+    "money": 500,
+    "job": "Farmer",
+    "coords": "-73,67,-65"
+  },
+  "Ali": {
+    "money": 300,
+    "job": "Hunter",
+    "coords": "20,64,50"
+  }
+}
