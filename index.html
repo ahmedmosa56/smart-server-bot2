@@ -1,86 +1,38 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>البوت الذكي - سيرفرك</title>
+  <meta charset="UTF-8">
+  <title>بيانات اللاعب</title>
   <style>
-    body { font-family: 'Tahoma', sans-serif; background: #111; color: #fff; text-align: center; padding: 40px; }
-    h1 { color: #0f0; }
-    .chatbox {
-      width: 100%;
-      max-width: 500px;
-      margin: auto;
-      background: #222;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #0f0;
-    }
-    .message {
-      text-align: right;
-      margin: 10px 0;
-    }
-    .bot {
-      text-align: left;
-      color: #0f0;
-    }
-    input[type="text"] {
-      width: 80%;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      background: #0f0;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+    body { font-family: Arial; text-align: center; padding: 50px; direction: rtl; background: #202020; color: #fff; }
+    input, button { padding: 10px; margin: 10px; font-size: 16px; }
+    button { background: #1e90ff; color: #fff; border: none; cursor: pointer; border-radius: 5px; }
+    button:hover { background: #006fd3; }
   </style>
 </head>
 <body>
-  <h1>البوت الذكي للسيرفر</h1>
-  <div class="chatbox" id="chat">
-    <div class="message bot">أهلاً! اكتب أي سؤال عن السيرفر مثل: <br> "رصيدي؟" – "فين القروي؟"</div>
-  </div>
-  <input type="text" id="input" placeholder="اكتب رسالتك هنا..." />
-  <button onclick="send()">إرسال</button>
+  <h1>عرض بيانات اللاعب</h1>
+  <input type="text" id="playerName" placeholder="اكتب اسمك هنا">
+  <button onclick="getData()">اعرض بياناتك</button>
+  <div id="result" style="margin-top: 20px;"></div>
 
   <script>
-    const chat = document.getElementById("chat");
-    const input = document.getElementById("input");
-
-    function send() {
-      const text = input.value.trim();
-      if (!text) return;
-      addMessage("أنت", text);
-      getResponse(text);
-      input.value = "";
-    }
-
-    function addMessage(sender, text) {
-      const div = document.createElement("div");
-      div.className = "message " + (sender === "أنت" ? "" : "bot");
-      div.innerHTML = `<strong>${sender}:</strong> ${text}`;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function getResponse(text) {
-      let response = "معذرة، لم أفهم سؤالك.";
-      if (text.includes("رصيدي") || text.includes("الرصيد")) {
-        response = "رصيدك الحالي هو: 350$";
-      } else if (text.includes("القروي") || text.includes("shop")) {
-        response = "مكان القروي: x=123، y=64، z=200";
-      } else if (text.includes("وظيفتي") || text.includes("job")) {
-        response = "وظيفتك الحالية: مزارع";
-      }
-      setTimeout(() => addMessage("البوت", response), 500);
+    function getData(){
+      var player = document.getElementById("playerName").value;
+      fetch("players.json")
+      .then(response => response.json())
+      .then(data => {
+        var info = data[player];
+        if(info){
+          document.getElementById("result").innerHTML =
+            "اسمك: " + player + "<br>" +
+            "رصيدك: " + info.money + "<br>" +
+            "وظيفتك: " + info.job + "<br>" +
+            "الإحداثيات: " + info.coords;
+        } else {
+          document.getElementById("result").innerHTML = "اللاعب غير موجود.";
+        }
+      });
     }
   </script>
 </body>
